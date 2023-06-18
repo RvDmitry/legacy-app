@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: legacy-app
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+      hibernate:
+        hbm2ddl.auto: none
+        show_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/legacy_db
+    username: legacy_user
+    password: legacy_pass
+  liquibase:
+    enabled: false
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    producer:
+      client-id: legacy-app
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: my.home.legacyapp.service.KafkaValueSerializer
+      retries: 2
+      topic: LEGACY_DB_UPDATE
+      key: IN_KEY
+
+server:
+  port: 8081
+logging:
+  level:
+    org.hibernate.sql: debug

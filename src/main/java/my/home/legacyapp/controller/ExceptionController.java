@@ -12,8 +12,6 @@ public class ExceptionController {
 
     @ExceptionHandler
     public ResponseEntity<BusinessError> handleException(BusinessNotFoundException ex) {
-        var businessError = new BusinessError();
-        businessError.setErrorMessage(ex.getMessage());
-        return new ResponseEntity<>(businessError, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new BusinessError(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

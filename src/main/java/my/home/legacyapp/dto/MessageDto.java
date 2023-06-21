@@ -1,11 +1,4 @@
 package my.home.legacyapp.dto;
 
-import lombok.Data;
-
-@Data
-public class MessageDto {
-
-    private long id;
-    private Action action;
-    private long eventTime;
+public record MessageDto(long id, Action action, long eventTime) {
 }

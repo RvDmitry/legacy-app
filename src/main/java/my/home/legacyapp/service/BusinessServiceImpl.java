@@ -51,30 +51,22 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public BusinessDto save(BusinessDto dto) {
         var entity = new BusinessEntity();
-        entity.setType(dto.getType());
-        entity.setBusinessValue(dto.getBusinessValue());
+        entity.setType(dto.type());
+        entity.setBusinessValue(dto.businessValue());
         businessRepository.save(entity);
-        try {
-            sendMessageService.sendMessage(createEvent(entity.getId(), Action.CREATE));
-        } catch (Exception e) {
-            log.error(LOG_ERROR, e);
-        }
+        sendMessage(entity.getId(), Action.CREATE);
         return businessMapper.fromEntityToDto(entity);
     }
 
     @Transactional
     @Override
     public BusinessDto update(BusinessDto dto) {
-        var entity = findById(dto.getId());
-        entity.setType(dto.getType());
-        entity.setBusinessValue(dto.getBusinessValue());
+        var entity = findById(dto.id());
+        entity.setType(dto.type());
+        entity.setBusinessValue(dto.businessValue());
         entity.setUpdatedAt(LocalDateTime.now());
         businessRepository.save(entity);
-        try {
-            sendMessageService.sendMessage(createEvent(entity.getId(), Action.UPDATE));
-        } catch (Exception e) {
-            log.error(LOG_ERROR, e);
-        }
+        sendMessage(entity.getId(), Action.UPDATE);
         return businessMapper.fromEntityToDto(entity);
     }
 
@@ -83,11 +75,7 @@ public class BusinessServiceImpl implements BusinessService {
     public void delete(Long id) {
         findById(id);
         businessRepository.deleteById(id);
-        try {
-            sendMessageService.sendMessage(createEvent(id, Action.DELETE));
-        } catch (Exception e) {
-            log.error(LOG_ERROR, e);
-        }
+        sendMessage(id, Action.DELETE);
     }
 
     private BusinessEntity findById(Long id) {
@@ -95,11 +83,11 @@ public class BusinessServiceImpl implements BusinessService {
                 .orElseThrow(() -> new BusinessNotFoundException(String.format("Value with id[%d] not found", id)));
     }
 
-    private MessageDto createEvent(long id, Action action) {
-        var event = new MessageDto();
-        event.setId(id);
-        event.setAction(action);
-        event.setEventTime(System.currentTimeMillis() / 1000L);
-        return  event;
+    private void sendMessage(long id, Action action) {
+        try {
+            sendMessageService.sendMessage(new MessageDto(id, action, System.currentTimeMillis() / 1000L));
+        } catch (Exception e) {
+            log.error(LOG_ERROR, e);
+        }
     }
 }

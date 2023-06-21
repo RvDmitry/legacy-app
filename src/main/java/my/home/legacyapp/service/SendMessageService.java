@@ -27,18 +27,18 @@ public class SendMessageService {
     public void sendMessage(MessageDto message) throws ExecutionException, InterruptedException {
         CompletableFuture<SendResult<String, MessageDto>> completableFuture = this.producer.sendMessage(topic, key, message);
         SendResult<String, MessageDto> result = completableFuture.get();
-        logger.info(String.format(
-                "Produced:\n"
-                        + "topic: %s\n"
-                        + "partition: %d\n"
-                        + "offset: %d\n"
-                        + "value size: %d\n"
-                        + "message: %s",
-                result.getRecordMetadata().topic(),
+        logger.info("""
+                        Produced:
+                        topic: {}
+                        partition: {}
+                        offset: {}
+                        value size: {}
+                        message: {}""",
+                topic,
                 result.getRecordMetadata().partition(),
                 result.getRecordMetadata().offset(),
                 result.getRecordMetadata().serializedValueSize(),
                 message
-        ));
+        );
     }
 }

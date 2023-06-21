@@ -25,7 +25,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BusinessServiceImpl implements BusinessService {
 
-    private static final String LOG_ERROR = "Sending a message to Kafka failed";
     private final BusinessRepository businessRepository;
     private final BusinessMapper businessMapper;
     private final SendMessageService sendMessageService;
@@ -84,10 +83,6 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     private void sendMessage(long id, Action action) {
-        try {
-            sendMessageService.sendMessage(new MessageDto(id, action, System.currentTimeMillis() / 1000L));
-        } catch (Exception e) {
-            log.error(LOG_ERROR, e);
-        }
+        sendMessageService.sendMessage(new MessageDto(id, action, System.currentTimeMillis() / 1000L));
     }
 }

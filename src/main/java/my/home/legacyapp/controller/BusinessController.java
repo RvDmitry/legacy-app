@@ -44,7 +44,7 @@ public class BusinessController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
-    @GetMapping("values/types")
+    @GetMapping("/values/types")
     public ResponseEntity<Page<BusinessDto>> pageByType(@RequestParam("types") Set<BusinessType> types, Pageable pageable) {
         var page = businessService.pageByType(types, pageable);
         return new ResponseEntity<>(page, HttpStatus.OK);
